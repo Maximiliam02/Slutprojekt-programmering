@@ -12,19 +12,29 @@ namespace Template
     {
         GraphicsDeviceManager graphics;
         SpriteBatch SpriteBatch;
+        
 
         Texture2D Skepp;
+        Texture2D Bakgrund;
         Texture2D Asteroider;
         Texture2D Mynt;
 
         Vector2 SkeppPos = new Vector2(100, 300);
-        Vector2 AsteroiderPos = new Vector2;
+        //center av skeppet
+        Vector2 SkeppStart;
+        Vector2 Asteroid;
+        Vector2 BakgrundPos;
+
+        Rectangle SkeppRektangle;
+
+        float Rotera;
+        float RoteraFart = 5f;
 
 
-  
-    
 
-        
+
+
+
 
         public Game1()
         {
@@ -53,8 +63,13 @@ namespace Template
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+            Bakgrund = Content.Load<Texture2D>("Bakgrund");
             Skepp = Content.Load<Texture2D>("Skepp");
-            
+
+
+
+
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -79,13 +94,19 @@ namespace Template
             KeyboardState kNewstate = Keyboard.GetState();
             KeyboardState kstate = Keyboard.GetState();
             if (kstate.IsKeyDown(Keys.Right))
-                SkeppPos.X++;
+                Rotera += MathHelper.ToRadians(RoteraFart);
             if (kstate.IsKeyDown(Keys.Left))
-                SkeppPos.X--;
+                Rotera -= MathHelper.ToRadians(RoteraFart);
             if (kstate.IsKeyDown(Keys.Down))
                 SkeppPos.Y++;
             if (kstate.IsKeyDown(Keys.Up))
                 SkeppPos.Y--;
+
+            SkeppRektangle = new Rectangle((int)SkeppPos.X, (int) SkeppPos.Y, Skepp.Width, Skepp.Height);
+            SkeppStart = new Vector2(SkeppRektangle.Width / 2, SkeppRektangle.Height / 2);
+
+
+            
 
             base.Update(gameTime);
         }
@@ -95,11 +116,10 @@ namespace Template
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            graphics.PreferredBackBufferWidth = 2000;  // set this value to the desired width of your window
-            graphics.PreferredBackBufferHeight = 1000;   // set this value to the desired height of your window
             graphics.ApplyChanges();
             SpriteBatch.Begin();
-            SpriteBatch.Draw(Skepp, SkeppPos, Color.CornflowerBlue);
+            SpriteBatch.Draw(Bakgrund, BakgrundPos, Color.White);
+            SpriteBatch.Draw(Skepp, SkeppPos, null, Color.White, Rotera, SkeppStart, 1, SpriteEffects.None, 0f);
             SpriteBatch.End();
 
         }
