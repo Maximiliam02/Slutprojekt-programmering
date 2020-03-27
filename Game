@@ -1,7 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+
 
 namespace Template
 {
@@ -12,7 +15,7 @@ namespace Template
     {
         GraphicsDeviceManager graphics;
         SpriteBatch SpriteBatch;
-        
+
 
         Texture2D Skepp;
         Texture2D Bakgrund;
@@ -24,11 +27,15 @@ namespace Template
         Vector2 SkeppStart;
         Vector2 Asteroid;
         Vector2 BakgrundPos;
+        Vector2 SkeppFart;
 
         Rectangle SkeppRektangle;
 
         float Rotera;
         float RoteraFart = 5f;
+        float friktion = 0.1f;
+
+        const float Hastighet = 5f;
 
 
 
@@ -98,15 +105,32 @@ namespace Template
             if (kstate.IsKeyDown(Keys.Left))
                 Rotera -= MathHelper.ToRadians(RoteraFart);
             if (kstate.IsKeyDown(Keys.Down))
-                SkeppPos.Y++;
+            {
+                SkeppFart.Y = (float)Math.Sin(Rotera) * Hastighet;
+                SkeppFart.X = (float)Math.Cos(Rotera) * Hastighet;
+            }
+
+            else if(SkeppFart != null)
+            {
+                float a = SkeppFart.X;
+                float b = SkeppFart.Y;
+
+                SkeppFart.Y = b -= friktion * b;
+                SkeppFart.X = a -= friktion * a;
+
+            }
+
             if (kstate.IsKeyDown(Keys.Up))
                 SkeppPos.Y--;
 
-            SkeppRektangle = new Rectangle((int)SkeppPos.X, (int) SkeppPos.Y, Skepp.Width, Skepp.Height);
+            SkeppPos += SkeppFart;
+
+
+            SkeppRektangle = new Rectangle((int)SkeppPos.X, (int)SkeppPos.Y, Skepp.Width, Skepp.Height);
             SkeppStart = new Vector2(SkeppRektangle.Width / 2, SkeppRektangle.Height / 2);
 
 
-            
+
 
             base.Update(gameTime);
         }
