@@ -1,10 +1,10 @@
 using Microsoft.Xna.Framework;
+using System;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-
 
 namespace Template
 {
@@ -37,16 +37,17 @@ namespace Template
 
         const float Hastighet = 5f;
 
+        Random random = new Random();
+        int RandX, RandY;
 
-
-
-
+        private List<Vector2> Fiende = new List<Vector2>();
 
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            
         }
 
         /// <summary>
@@ -72,6 +73,10 @@ namespace Template
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             Bakgrund = Content.Load<Texture2D>("Bakgrund");
             Skepp = Content.Load<Texture2D>("Skepp");
+
+            RandX = random.Next(-4, 1);
+            RandY = random.Next(-4, 4);
+
 
 
 
@@ -104,13 +109,13 @@ namespace Template
                 Rotera += MathHelper.ToRadians(RoteraFart);
             if (kstate.IsKeyDown(Keys.Left))
                 Rotera -= MathHelper.ToRadians(RoteraFart);
-            if (kstate.IsKeyDown(Keys.Down))
+            if (kstate.IsKeyDown(Keys.Up))
             {
                 SkeppFart.Y = (float)Math.Sin(Rotera) * Hastighet;
                 SkeppFart.X = (float)Math.Cos(Rotera) * Hastighet;
             }
 
-            else if(SkeppFart != null)
+            else if (SkeppFart != null)
             {
                 float a = SkeppFart.X;
                 float b = SkeppFart.Y;
@@ -120,8 +125,7 @@ namespace Template
 
             }
 
-            if (kstate.IsKeyDown(Keys.Up))
-                SkeppPos.Y--;
+           
 
             SkeppPos += SkeppFart;
 
@@ -136,11 +140,14 @@ namespace Template
         }
 
 
+
+       
+
         // TODO: Add your update logic here
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            graphics.ApplyChanges();
+            graphics.ApplyChanges();            
             SpriteBatch.Begin();
             SpriteBatch.Draw(Bakgrund, BakgrundPos, Color.White);
             SpriteBatch.Draw(Skepp, SkeppPos, null, Color.White, Rotera, SkeppStart, 1, SpriteEffects.None, 0f);
