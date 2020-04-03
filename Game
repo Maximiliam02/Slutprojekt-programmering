@@ -34,11 +34,14 @@ namespace Template
         float Rotera;
         float RoteraFart = 5f;
         float friktion = 0.1f;
+        float spawn = 0f;
 
         const float Hastighet = 5f;
 
+        int FiendeSpawnPos = 0, EnemyTimer = 0, SpawnRate = 60;
+
         Random random = new Random();
-        int RandX, RandY;
+        
 
         private List<Vector2> Fiende = new List<Vector2>();
 
@@ -47,7 +50,7 @@ namespace Template
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            
+
         }
 
         /// <summary>
@@ -73,9 +76,9 @@ namespace Template
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             Bakgrund = Content.Load<Texture2D>("Bakgrund");
             Skepp = Content.Load<Texture2D>("Skepp");
+            Asteroider = Content.Load<Texture2D>("Asteroider");
 
-            RandX = random.Next(-4, 1);
-            RandY = random.Next(-4, 4);
+
 
 
 
@@ -125,7 +128,7 @@ namespace Template
 
             }
 
-           
+
 
             SkeppPos += SkeppFart;
 
@@ -134,20 +137,44 @@ namespace Template
             SkeppStart = new Vector2(SkeppRektangle.Width / 2, SkeppRektangle.Height / 2);
 
 
+            if (SpawnRate > 15)//Om Spawnrate är över 15 så kommer den minska med 5 var 10 sekund, 10s = enemytimer 600
+            {
+                EnemyTimer++;
+                if (EnemyTimer == 120)
+                {
+                    SpawnRate -= 5;
+                    EnemyTimer = 0;
+                }
+            }
+            if (SpawnRate <= 15 && SpawnRate > 5)//Om Spawnrate är 5<x<15 så kommer den minska med 1 var 10 sekund, 10s = enemytimer 600
+            {
+                EnemyTimer++;
+                if (EnemyTimer == 120)
+                {
+                    SpawnRate -= 1;
+                    EnemyTimer = 0;
+                }
+            }
+            FiendeSpawnPos = random.Next(0, 400);
+            if (random.Next(0, SpawnRate) == 0)
+            {
+                FiendeSpawnPos.Add(new Vector2(FiendeSpawnPos, 0));
+            }
+            for (int i = 0; i < Fiende.Count; i++)
+            {
+                Fiende[i] = Fiende[i] - new Vector2(0, -2);
+            }
 
 
             base.Update(gameTime);
+
         }
-
-
-
-       
-
+   
         // TODO: Add your update logic here
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            graphics.ApplyChanges();            
+            graphics.ApplyChanges();
             SpriteBatch.Begin();
             SpriteBatch.Draw(Bakgrund, BakgrundPos, Color.White);
             SpriteBatch.Draw(Skepp, SkeppPos, null, Color.White, Rotera, SkeppStart, 1, SpriteEffects.None, 0f);
