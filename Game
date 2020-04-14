@@ -77,6 +77,10 @@ namespace Template
             Bakgrund = Content.Load<Texture2D>("Bakgrund");
             Skepp = Content.Load<Texture2D>("Skepp");
             Asteroid = Content.Load<Texture2D>("Asteroid");
+            
+            screenwidth = GraphicsDevice.Viewport.Width;
+            screenheight = GraphicsDevice.Viewport.Height;
+
 
 
 
