@@ -73,16 +73,6 @@ namespace Template
 
             screenwidth = GraphicsDevice.Viewport.Width;
             screenheight = GraphicsDevice.Viewport.Height;
-
-
-
-
-
-
-
-
-
-
             // TODO: use this.Content to load your game content here
         }
 
