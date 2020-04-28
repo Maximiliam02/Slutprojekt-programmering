@@ -20,6 +20,8 @@ namespace Template
 
         Vector2 SkeppPos = new Vector2(100, 300), BakgrundPos, SkeppStart, SkeppFart;
 
+        Rectangle rece = new Rectangle();
+        Rectangle rec = new Rectangle();
 
         float Rotera, RoteraFart = 5f, Friktion = 0.1f;
 
@@ -183,6 +185,17 @@ namespace Template
                 RandomMyntSpawn.Add(new Vector2(Random.Next(10, 900), Random.Next(30, 450)));
             }
 
+           
+            if (SkeppRektangle.Intersects(rec))
+            {
+                Exit();
+            }
+
+            if (SkeppRektangle.Intersects(rece))
+            {
+            }
+
+
             base.Update(gameTime);
         }
 
@@ -202,16 +215,14 @@ namespace Template
             SpriteBatch.Draw(Asteroid, new Rectangle(0, 0, 0, 0), Color.White);
 
             foreach (Vector2 RandomAsteroidSpawn in RandomAsteroidSpawn)
-            {
-                Rectangle rec = new Rectangle();
+            { 
                 rec.Location = RandomAsteroidSpawn.ToPoint();
-                rec.Size = new Point(80, 80);
+                rec.Size = new Point(100, 100);
                 SpriteBatch.Draw(Asteroid, rec, Color.White);
             }
 
             foreach (Vector2 RandomMyntSpawn in RandomMyntSpawn)
             {
-                Rectangle rece = new Rectangle();
                 rece.Location = RandomMyntSpawn.ToPoint();
                 rece.Size = new Point(80, 80);
                 SpriteBatch.Draw(Mynt, rece, Color.White);
