@@ -222,7 +222,7 @@ namespace Template
                 RandomAsteroidSpawn[i] = RandomAsteroidSpawn[i] - new Vector2(0, -2);
             }
             /// <summary>
-            /// Mynten spawn kordinater
+            /// Mynten spawn kordinater och lägger till ett mynt i listan
             /// </summary>
             if (Random.Next(0, SpawnRateMynt) == 0)
             {
@@ -242,8 +242,9 @@ namespace Template
             /// </summary>
             if (SkeppRektangle.Intersects(rece))
             {
-                Poäng += 1;
+                Poäng += 1; 
                 RandomMyntSpawn.Remove(RandomMyntSpawn[0]);
+                rece.Size = new Point(0, 0);
             }
 
 
