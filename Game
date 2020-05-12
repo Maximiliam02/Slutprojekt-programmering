@@ -15,29 +15,48 @@ namespace Template
     {
         GraphicsDeviceManager graphics;
         SpriteBatch SpriteBatch;
-        SpriteFont Ubuntu32;
 
-
+        /// <summary>
+        /// Alla sprite bilder som man kommer kunna se på template.
+        /// </summary>
         public Texture2D Skepp, Mynt, Bakgrund, Asteroid;
 
+        /// <summary>
+        /// Positioner/kordniater.
+        /// </summary>
         Vector2 SkeppPos = new Vector2(100, 300), BakgrundPos, SkeppStart, SkeppFart;
 
+        /// <summary>
+        /// Rektanglar/hitboxes
+        /// </summary>
         Rectangle rece = new Rectangle();
         Rectangle rec = new Rectangle();
+        Rectangle SkeppRektangle;
 
+        /// <summary>
+        /// värden som liknar double men reagerar snabbare.
+        /// </summary>
         float Rotera, RoteraFart = 5f, Friktion = 0.1f;
 
+        /// <summary>
+        /// Konstant hastighet
+        /// </summary>
         const float Hastighet = 5f;
 
-        string Counter = (Skriva);
-        int screenwidth, screenheight, AsteroidSpawnPos = 0, AsteroidTimer = 0, MyntTimer = 0, SpawnRateAsteroid = 250, SpawnRateMynt = 500, MyntPos, Skriva = 0;
-      
+        /// <summary>
+        /// Heltal/värden
+        /// </summary>
+        int screenwidth, screenheight, AsteroidSpawnPos = 0, AsteroidTimer = 0, MyntTimer = 0, SpawnRateAsteroid = 250, SpawnRateMynt = 500, MyntPos, Poäng = 0;
 
+        /// <summary>
+        /// Listor
+        /// </summary>
         private List<Vector2> RandomAsteroidSpawn = new List<Vector2>();
         private List<Vector2> RandomMyntSpawn = new List<Vector2>();
 
-        Rectangle SkeppRektangle;
-
+        /// <summary>
+        /// Mina 2 randoms 
+        /// </summary>
         private Random Random = new Random();
         private Random rnd = new Random();
 
@@ -81,8 +100,6 @@ namespace Template
             Asteroid = Content.Load<Texture2D>("Asteroid");
             Mynt = Content.Load<Texture2D>("Mynt");
 
-            Ubuntu32 = Content.Load<SpriteFont>("Counter/Ubuntu32");
-
             screenwidth = GraphicsDevice.Viewport.Width;
             screenheight = GraphicsDevice.Viewport.Height;
 
@@ -106,6 +123,9 @@ namespace Template
 
         protected override void Update(GameTime gameTime)
         {
+            /// <summary>
+            /// Hur tangenterna ändrar värdena 
+            /// </summary>
             KeyboardState kNewstate = Keyboard.GetState();
             KeyboardState kstate = Keyboard.GetState();
             if (kstate.IsKeyDown(Keys.Right))
@@ -125,13 +145,18 @@ namespace Template
                 SkeppFart.Y = b -= Friktion * b;
                 SkeppFart.X = a -= Friktion * a;
             }
-
+            /// <summary>
+            /// Koden som fixar skeppets fart, rotationsfart och friktion
+            /// </summary>
             SkeppPos += SkeppFart;
-
+           
             SkeppRektangle = new Rectangle((int)SkeppPos.X, (int)SkeppPos.Y, Skepp.Width, Skepp.Height);
             SkeppStart = new Vector2(SkeppRektangle.Width / 2, SkeppRektangle.Height / 2);
 
-            if (SpawnRateAsteroid > 15)//Om Spawnrate är över 15 så kommer den minska med 5 var 10 sekund, 10s = Asteroidtimer 600
+            /// <summary>
+            /// Om spawnraten blir över 15 så minskar den med 5.
+            /// </summary>
+            if (SpawnRateAsteroid > 15)
             {
                 AsteroidTimer++;
                 if (AsteroidTimer == 120)
@@ -152,6 +177,9 @@ namespace Template
                 }
             }
 
+            /// <summary>
+            /// Om spawnraten blir över 5 så minskar den med 1.
+            /// </summary>
             if (SpawnRateMynt > 5)
             {
                 MyntTimer++;
@@ -162,7 +190,7 @@ namespace Template
                 }
             }
 
-
+            
             if (SpawnRateMynt <= 1 && SpawnRateMynt > 1)
             {
                 MyntTimer++;
@@ -173,33 +201,49 @@ namespace Template
                 }
             }
 
-
+            /// <summary>
+            /// Ändrar Asteroid och mynt kordinater
+            /// </summary>
             MyntPos = rnd.Next(100, screenwidth);
             AsteroidSpawnPos = rnd.Next(10, screenwidth);
 
-
+            /// <summary>
+            /// Asteroidernas spawn pos
+            /// </summary>
             if (rnd.Next(0, SpawnRateAsteroid) == 0)
             {
                 RandomAsteroidSpawn.Add(new Vector2(AsteroidSpawnPos, 0));
             }
+            /// <summary>
+            /// Asteroiderna åker neråt
+            /// </summary>
             for (int i = 0; i < RandomAsteroidSpawn.Count; i++)
             {
                 RandomAsteroidSpawn[i] = RandomAsteroidSpawn[i] - new Vector2(0, -2);
             }
-
+            /// <summary>
+            /// Mynten spawn kordinater
+            /// </summary>
             if (Random.Next(0, SpawnRateMynt) == 0)
             {
                 RandomMyntSpawn.Add(new Vector2(Random.Next(10, 900), Random.Next(30, 450)));
             }
 
-           
+            /// <summary>
+            /// Om skepp hitbox stöter ihop med asteroidhitboxen så stängs programmet ner
+            /// </summary>
             if (SkeppRektangle.Intersects(rec))
             {
                 Exit();
             }
 
+            /// <summary>
+            /// Om skepp hitbox träffar mynt så får poäng + 1 värde
+            /// </summary>
             if (SkeppRektangle.Intersects(rece))
             {
+                Poäng += 1;
+                RandomMyntSpawn.Remove(RandomMyntSpawn[0]);
             }
 
 
@@ -213,6 +257,9 @@ namespace Template
         // TODO: Add your update logic here
         protected override void Draw(GameTime gameTime)
         {
+            /// <summary>
+            /// Draw, ritar ut allt och bestämmer pos, form, färg m.m
+            /// </summary>
             GraphicsDevice.Clear(Color.CornflowerBlue);
             graphics.ApplyChanges();
             SpriteBatch.Begin();
@@ -220,34 +267,33 @@ namespace Template
             SpriteBatch.Draw(Skepp, SkeppPos, null, Color.White, Rotera, SkeppStart, 1, SpriteEffects.None, 0f);
             SpriteBatch.Draw(Mynt, new Rectangle(screenheight, screenwidth, 0, 0), Color.White);
             SpriteBatch.Draw(Asteroid, new Rectangle(0, 0, 0, 0), Color.White);
-            SpriteBatch.DrawString(Ubuntu32, "String", new Vector2(100, 100), Color.Yellow);
 
+            /// <summary>
+            /// Asteroidernas rektangel åker med spriten
+            /// </summary>
             foreach (Vector2 RandomAsteroidSpawn in RandomAsteroidSpawn)
             { 
                 rec.Location = RandomAsteroidSpawn.ToPoint();
-                rec.Size = new Point(100, 100);
+                rec.Size = new Point(75, 75);
                 SpriteBatch.Draw(Asteroid, rec, Color.White);
             }
 
+            /// <summary>
+            /// Myntens rektangel och så att den är på mynt spriten
+            /// </summary>
             foreach (Vector2 RandomMyntSpawn in RandomMyntSpawn)
             {
                 rece.Location = RandomMyntSpawn.ToPoint();
-                rece.Size = new Point(80, 80);
+                rece.Size = new Point(50, 50);
                 SpriteBatch.Draw(Mynt, rece, Color.White);
 
             }
 
-
-
-
-
-
-
-
-
             SpriteBatch.End();
 
-
+            /// <summary>
+            /// Den gör så att när asteroiderna åker utanför skärmen så kommer den upp igen.
+            /// </summary>
             List<Vector2> temp3 = new List<Vector2>();
             foreach (var item in RandomAsteroidSpawn)
             {
